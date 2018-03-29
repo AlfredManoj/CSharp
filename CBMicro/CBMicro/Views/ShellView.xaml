@@ -1,0 +1,97 @@
+﻿<Window x:Class="CBMicro.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CBMicro.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:cal="http://www.caliburnproject.org"
+        xmlns:behaviour="clr-namespace:CBMicro.Behaviours"
+        mc:Ignorable="d"
+        Title="ShellView" Height="300" Width="500">
+    <Window.Resources>
+        <!--<local:Triggers x:Key="debugTriggers" x:Shared="False">
+            <i:EventTrigger EventName="MouseLeftButtonDown">
+                <local:DebugAction Message="DataContext: {0}" MessageParameter="{Binding}"/>
+                <local:DebugAction Message="ElementName: {0}" MessageParameter="{Binding Text, ElementName=textBlock2}"/>
+                <local:DebugAction Message="Mentor: {0}" MessageParameter="{Binding Text, RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}}"/>
+            </i:EventTrigger>
+        </local:Triggers>-->
+        <behaviour:Behaviors x:Key="debugBehaviours" x:Shared="False">
+            <behaviour:DebugAction/>
+        </behaviour:Behaviors>
+        <Style x:Key="debugBehavior" TargetType="FrameworkElement">
+            <Setter Property="behaviour:SupplementaryInteraction.Behaviors" Value="{StaticResource debugBehaviours}"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="FullName" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
+        <TextBlock Text="{Binding ElementName=FirstName,Path=Text}" Grid.Row="1" Grid.Column="4"/>
+        <TextBox x:Name="FirstName" behaviour:TextBoxWaterMarkBehaviour.IsWatermarkEnabled="True" behaviour:TextBoxWaterMarkBehaviour.WatermarkText="Enter your First Name" Width="100" Grid.Row="2" Grid.Column="1"/>
+        <TextBox x:Name="LastName" behaviour:TextBoxSelectionBehaviour.IsSelectionEnabled="True" Width="100" Grid.Row="2" Grid.Column="2"/>
+        <ComboBox x:Name="Persons" Width="100" Grid.Row="3" Grid.Column="1" SelectedItem="{Binding SelectedPerson,Mode=OneWayToSource}" DisplayMemberPath="FirstName"/>
+        <!--<TextBlock Text="{Binding SelectedPerson.LastName}"  Grid.Row="3" Grid.Column="2" Width="100"/>-->
+        <TextBlock x:Name="SelectedPerson_LastName"  Grid.Row="3" Grid.Column="2" Width="100"/>
+        <Button x:Name="AddUser" Grid.Row="4" Grid.Column="1" Width="100" Content="Add User"/>
+        <Button Content="First" x:Name="FirstChild" Grid.Row="4" Grid.Column="2" Width="70"/>
+        <Button Content="Second" x:Name="SecondChild" Grid.Row="4" Grid.Column="3" Width="70"/>
+        <Button Content="Remove" x:Name="RemoveChild" Grid.Row="4" Grid.Column="4" Width="70"/>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="6">
+            <Button Content="Click me"  Width="70">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <cal:ActionMessage MethodName="SayHello" >
+                            <!--even we can have multiple args-->
+                            <cal:Parameter Value="$eventArgs"/>
+                            <!--<cal:Parameter Value="$dataContext"/>-->
+                            <!--<cal:Parameter Value="$source"/>-->
+                            <!--<cal:Parameter Value="$view"/>-->
+                            <!--<cal:Parameter Value="$executionContext"/>-->
+                            <!--<cal:Parameter Value="$this"/>-->
+                            <!--<cal:Parameter Value="test as string"/>-->
+                        </cal:ActionMessage>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+            <Button Content="click this" cal:Message.Attach="[Event Click] = [Action ClickThisMethod($eventArgs,FirstName.Text,FirstName)];[Event LostFocus] = [Action LostFocusMethod]">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <!--<Style.Setters>
+                            <Setter Property="i:Interaction.Behaviors">
+                                <Setter.Value>
+                                    <behaviour:SampleBehaviour/>
+                                </Setter.Value>
+                            </Setter>
+                        </Style.Setters>-->
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsExtended}" Value="True">
+                                <Setter Property="behaviour:SupplementaryInteraction.Behaviors" Value="{StaticResource debugBehaviours}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        <ContentControl Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="5" x:Name="ActiveItem"/>
+    </Grid>
+</Window>
