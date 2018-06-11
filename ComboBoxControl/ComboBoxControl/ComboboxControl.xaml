@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="ComboBoxControl.ComboboxControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ComboBoxControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="200">
+    <UserControl.Resources>
+        <!--combobox item style-->
+        <Style x:Key="Column_CmbItem" TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                        <Grid x:Name="Border" Grid.ColumnSpan="2" Margin="1,0,1,1" Background="White">
+                            <ContentPresenter/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#E5F3FB"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#E5F3FB"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--Toggle Button Template-->
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+            <Grid x:Name="grid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="Border" SnapsToDevicePixels="True" Grid.ColumnSpan="2" Background="White" BorderBrush="LightGray" BorderThickness="1"/>
+                <!--<Border x:Name="Boredr1" SnapsToDevicePixels="True" Grid.Column="0"  Margin="1" Background="White" BorderBrush="LightGray" BorderThickness="0,0,1,0" />-->
+                <Path x:Name="Arrow" SnapsToDevicePixels="True" Grid.Column="1" Stroke="Black" StrokeThickness="1.5" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 5 5 L 10 0"/>
+                <ContentPresenter Grid.Column="0" TextElement.Foreground="Orange"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Border" Property="BorderBrush" Value="Blue"/>
+                    <!--<Setter TargetName="Boredr1" Property="BorderBrush" Value="Blue"/>-->
+                </Trigger>
+                <!--<Trigger Property="ToggleButton.IsChecked" Value="True">
+                    <Setter TargetName="Arrow" Property="Data" Value="M 0 0 L 5 5 L 10 0"/>
+                    <Setter TargetName="Arrow" Property="Fill" Value="White"/>
+                    <Setter TargetName="Arrow" Property="Stroke" Value="Black"/>
+                    <Setter TargetName="Arrow" Property="StrokeThickness" Value="1.5"/>
+                </Trigger>-->
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="grid" Property="Visibility" Value="Visible"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!--TextBox Template-->
+        <ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
+            <ScrollViewer x:Name="PART_ContentHost" Focusable="False" />
+        </ControlTemplate>
+
+        <TextBlock x:Key="header2" Text="Name"/>
+        <TextBlock x:Key="header3" Text="Symbol"/>
+
+        <!--2 column combobox-->
+        <Style x:Key="2_Column_Cmb" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate  TargetType="{x:Type ComboBox}">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton" Foreground="Black" Template="{StaticResource ComboBoxToggleButton}" Focusable="false" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
+                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3,3,23,3"  VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <TextBox OverridesDefaultStyle="True" SelectionBrush="#99C9EF" Margin="0,0,30,0" TextWrapping="NoWrap"   x:Name="PART_EditableTextBox" FontFamily="Segoe UI Dark"   Foreground="Black" Style="{x:Null}" Template="{StaticResource ComboBoxTextBox}" HorizontalAlignment="Left" Focusable="True"  VerticalAlignment="Center"  FontSize="15"   Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup x:Name="Popup"  Grid.ColumnSpan="2" Placement="Bottom"  IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid x:Name="DropDown"   SnapsToDevicePixels="True" MaxWidth="{TemplateBinding ActualWidth}" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Background="LightGray"  Grid.Row="0" Grid.Column="0">
+                                        <TextBlock  Text="{Binding Text, Source={StaticResource header2}}"  HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" FontFamily="Segoe Ui Dark" FontSize="15" />
+                                    </Grid>
+                                    <Grid Background="LightGray"  Grid.Row="0" Grid.Column="1">
+                                        <TextBlock Text="{Binding Text, Source={StaticResource header3}}" Background="LightGray" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" FontFamily="Segoe Ui Dark" FontSize="15"/>
+                                    </Grid>
+                                    <Border Grid.ColumnSpan="2" Grid.RowSpan="2" x:Name="DropDownBorder" SnapsToDevicePixels="True" Background="Transparent" MaxWidth="{TemplateBinding ActualWidth}" BorderThickness="1" BorderBrush="LightGray"/>
+                                    <ScrollViewer Grid.ColumnSpan="2" ScrollViewer.CanContentScroll="False" Grid.Row="1" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" Background="Transparent"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEditable" Value="true">
+                                <Setter Property="IsTabStop" Value="false"/>
+                                <Setter  TargetName="PART_EditableTextBox" Property="Background" Value="White"/>
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="PART_EditableTextBox" Property="Foreground" Value="Black"/>
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="IsTabStop" Value="false"/>
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="PART_EditableTextBox" Property="Foreground" Value="Black"/>
+                                <Setter  TargetName="PART_EditableTextBox" Property="IsEnabled" Value="False"/>
+                                <Setter  TargetName="PART_EditableTextBox" Property="Background" Value="White"/>
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsGrouping" Value="true">
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                            </Trigger>
+                            <Trigger SourceName="Popup" Property="AllowsTransparency" Value="true">
+                                <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+    <Grid>
+        <ComboBox x:Name="Combobox" Margin="0,0,-200,-30" IsEditable="True" HorizontalAlignment="Right" IsTextSearchEnabled="True" TextSearch.TextPath="name" ItemsSource="{Binding cmb}" Style="{StaticResource 2_Column_Cmb}" Height="30" ItemContainerStyle="{StaticResource Column_CmbItem}"  Width="200" Tag="Item1" VerticalAlignment="Bottom" d:LayoutOverrides="Height">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Background="Transparent" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding name}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" FontSize="15" TextTrimming="CharacterEllipsis" Foreground="Black" />
+                        <TextBlock Text="{Binding symbol}" Grid.Column="1" VerticalAlignment="Center"  HorizontalAlignment="Center" FontSize="20"  Foreground="Black"/>
+                    </Grid>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+    </Grid>
+</UserControl>
