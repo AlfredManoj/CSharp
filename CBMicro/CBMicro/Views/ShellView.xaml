@@ -55,7 +55,7 @@
         <Button x:Name="AddUser" Grid.Row="4" Grid.Column="1" Width="100" Content="Add User"/>
         <Button Content="First" x:Name="FirstChild" Grid.Row="4" Grid.Column="2" Width="70"/>
         <Button Content="Second" x:Name="SecondChild" Grid.Row="4" Grid.Column="3" Width="70"/>
-        <Button Content="Remove" x:Name="RemoveChild" Grid.Row="4" Grid.Column="4" Width="70"/>
+        <Button Content="Remove" x:Name="RemoveChild" Background="Blue" Grid.Row="4" Grid.Column="4" Width="70"/>
         <StackPanel Grid.Row="5" Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="6">
             <Button Content="Click me"  Width="70">
                 <i:Interaction.Triggers>
